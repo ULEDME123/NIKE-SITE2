@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nike Style</title><link rel="stylesheet" href="style.css">
+ 
+    <body>
+        <section class="slider">
+            <div class="slide">🔥 Скидки до 50% на кроссовки!</div>
+            <div class="slide">🆕 Новая коллекция уже в продаже!</div>
+            <div class="slide">🎁 Подарки при покупке от 100$!</div>
+        </section>
+        
+        <header>
+            <h1>Nike</h1>
+            <nav>
+                <a href="#">Главная</a>
+                <a href="#">Товары</a>
+                <a href="#">О нас</a>
+                <a href="#">Контакты</a>
+                <a href="#" id="cart-link">Корзина (0)</a>
+            </nav>
+        </header>
+        
+        <section class="hero">
+            <h2>Твой стиль. Твоя скорость.</h2>
+        </section>
+        
+        <div class="filter">
+            <label for="category">Выберите категорию: </label>
+            <select id="category" onchange="filterProducts()">
+                <option value="all">Все</option>
+                <option value="shoes">Кроссовки</option>
+                <option value="clothing">Одежда</option>
+                <option value="accessories">Аксессуары</option>
+            </select>
+        </div>
+        
+        <section class="products">
+            <h2>Популярные товары</h2>
+            <div class="product-card" data-category="shoes" onclick="showModal('Кроссовки Nike Air', 'Кроссовки для бега, стильные и комфортные.', '120₽')">
+                <img src="download.jpg" alt="Product 1">
+                <h3>Кроссовки Nike Air</h3>
+                <p>Кроссовки для бега, стильные и комфортные.</p>
+                <button onclick="addToCart('Кроссовки Nike Air', 120)">Добавить в корзину</button>
+            </div>
+            <div class="product-card" data-category="clothing" onclick="showModal('Футболка Nike', 'Футболка с логотипом Nike, легкая и удобная.', '25₽')">
+                <img src="download (1).jpg" alt="Product 2">
+                <h3>Футболка Nike</h3>
+                <p>Футболка с логотипом Nike, легкая и удобная.</p>
+                <button onclick="addToCart('Футболка Nike', 25)">Добавить в корзину</button>
+            </div>
+            <div class="product-card" data-category="clothing" onclick="showModal('Шорты Nike', 'Комфортные шорты для спорта.', '30₽')">
+                <img src="download (2).jpg" alt="Product 3">
+                <h3>Шорты Nike</h3>
+                <p>Комфортные шорты для спорта.</p>
+                <button onclick="addToCart('Шорты Nike', 30)">Добавить в корзину</button>
+            </div>
+            <div class="product-card" data-category="accessories" onclick="showModal('Рюкзак Nike', 'Удобный и стильный рюкзак для тренировок.', '40₽')">
+                <img src="download (3).jpg" alt="Product 4">
+                <h3>Рюкзак Nike</h3>
+                <p>Удобный и стильный рюкзак для тренировок.</p>
+                <button onclick="addToCart('Рюкзак Nike', 40)">Добавить в корзину</button>
+            </div>
+        </section>
+        
+        <section class="cart" id="cart-section" style="display: none;">
+            <h2>Ваша корзина</h2>
+            <ul class="cart-items" id="cart-items"></ul>
+            <div class="cart-total" id="cart-total">Общая сумма: 0 ₽</div>
+        </section>
+        
+        <footer>
+            <p>&copy; 2025 Nike, Inc. Все права защищены.</p>
+        </footer>
+        
+        <!-- Модальное окно -->
+        <div id="product-modal" class="modal">
+            <div class="modal-content">
+                <h2 id="modal-title"></h2>
+                <p id="modal-description"></p>
+                <p id="modal-price"></p>
+                <button class="close-btn" onclick="closeModal()">Закрыть</button>
+            </div>
+        </div>
+        
+        <script>
+            let cart = [];
+            const cartLink = document.getElementById('cart-link');
+            const cartSection = document.getElementById('cart-section');
+            const cartItems = document.getElementById('cart-items');
+            const cartTotal = document.getElementById('cart-total');
+            const modal = document.getElementById('product-modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalDescription = document.getElementById('modal-description');
+            const modalPrice = document.getElementById('modal-price');
+        
+            function addToCart(product, price) {
+                cart.push({ product, price });
+                cartLink.textContent = `Корзина (${cart.length})`;
+                alert(`${product} добавлен в корзину!`);
+            }
+        
+            function showModal(title, description, price) {
+                modal.style.display = 'flex';
+                modalTitle.textContent = title;
+                modalDescription.textContent = description;
+                modalPrice.textContent = `Цена: ${price}`;
+            }
+        
+            function closeModal() {
+                modal.style.display = 'none';
+            }
+        
+            cartLink.addEventListener('click', function() {
+                cartSection.style.display = cart.length > 0 ? 'block' : 'none';
+                if (cart.length > 0) {
+                    cartItems.innerHTML = '';
+                    let total = 0;
+                    cart.forEach((item, index) => {
+                        const li = document.createElement('li');
+                        li.innerHTML = `${item.product} - ${item.price} ₽ <button onclick="removeFromCart(${index})">Удалить</button>`;
+                        cartItems.appendChild(li);
+                        total += item.price;
+                    });
+                    cartTotal.textContent = `Общая сумма: ${total} ₽`;
+                }
+            });
+        
+            function removeFromCart(index) {
+                cart.splice(index, 1);
+                cartLink.textContent = `Корзина (${cart.length})`;
+                cartSection.style.display = cart.length > 0 ? 'block' : 'none';
+                alert('Товар удален из корзины');
+                cartLink.click(); // обновить корзину
+            }
+        
+            function filterProducts() {
+                const category = document.getElementById('category').value;
+                const productCards = document.querySelectorAll('.product-card');
+        
+                productCards.forEach(card => {
+                    if (category === 'all' || card.dataset.category === category) {
+                        card.style.display = 'inline-block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            }
+        </script>
+        
+        </body>
+        </html>
